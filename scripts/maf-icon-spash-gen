@@ -1,0 +1,75 @@
+#!/bin/bash
+# Generate mass icon and splash screens for Oracle MAF
+# Based on Phonegap code copyright 2013 Tom Vincent <http://tlvince.com/contact>
+# modified a little by Nathan Birchenough, 2014 - http://birchenough.co.uk
+# modified a lot (but with no real creativity) by Daniel Iversen - www.nexle.dk
+# simplified for Mac OS X by Ruben Garcia, 2014 - http://rubengarciam.com
+# sh ~/apps/maf-icon-spash-genr.sh icon.png splash.png
+
+usage() { echo "usage: $0 icon.png splash.png [dest_dir]"; exit 1; }
+
+[ "$1" ] && [ "$2" ] || usage
+[ "$3" ] || set "$1" "$2" "."
+
+proj=${PWD##*/};
+echo "project name: $proj";
+
+#devices=android,bada,bada-wac,blackberry,ios,webos,windows-phone
+eval mkdir -p "$3/{android,ios}"
+
+# Show the user some progress by outputing all commands being run.
+set -x
+
+# Define here your editing tool -- sips by default on MacOSX
+util="sips"
+
+# Icon resizing
+$util -Z 72 "$1" --out "$3/android/display-hdpi-icon.png"
+$util -Z 36 "$1" --out "$3/android/display-ldpi-icon.png"
+$util -Z 48 "$1" --out "$3/android/display-mdpi-icon.png"
+$util -Z 72 "$1" --out "$3/android/display-xhdpi-icon.png"
+
+$util -Z 29 "$1" --out "$3/ios/Icon-29.png"
+$util -Z 58 "$1" --out "$3/ios/Icon-29@2x.png"
+$util -Z 40 "$1" --out "$3/ios/Icon-40.png"
+$util -Z 80 "$1" --out "$3/ios/Icon-40@2x.png"
+$util -Z 50 "$1" --out "$3/ios/Icon-50.png"
+$util -Z 100 "$1" --out "$3/ios/Icon-50@2x.png"
+$util -Z 57 "$1" --out "$3/ios/Icon-57.png"
+$util -Z 114 "$1" --out "$3/ios/Icon-57@2x.png"
+$util -Z 72 "$1" --out "$3/ios/Icon-72.png"
+$util -Z 144 "$1" --out "$3/ios/Icon-72@2x.png"
+$util -Z 76 "$1" --out "$3/ios/Icon-76.png"
+$util -Z 152 "$1" --out "$3/ios/Icon-76@2x.png"
+$util -Z 120 "$1" --out "$3/ios/Icon-120.png"
+$util -Z 512 "$1" --out "$3/ios/iTunesArtwork.png"
+
+# Splash resizing
+
+#$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default-1135h@2x.png"
+$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default-1135h@2x.png"
+$util -Z 1136 -c 1136 640 "$2" --out "$3/ios/Default-568h@2x.png"
+$util -Z 480 -c 320 480 "$2" --out "$3/ios/Default-Land.png"
+$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-Landscape-Ipad.png"
+$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-Landscape.png"
+$util -Z 2048 -c 1469 2048 "$2" --out "$3/ios/Default-Landscape@2x.png"
+$util -Z 2048 -c 1536 2048 "$2" --out "$3/ios/Default-Landscape@2x~ipad.png"
+$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-LandscapeRetina.png"
+$util -Z 2048 -c 1536 2048 "$2" --out "$3/ios/Default-LandscapeRetina@2x.png"
+$util -Z 1024 -c 1004 768 "$2" --out "$3/ios/Default-Portrait-Ipad.png"
+$util -Z 1024 -c 1004 768 "$2" --out "$3/ios/Default-Portrait.png"
+$util -Z 2008 -c 2008 1536 "$2" --out "$3/ios/Default-Portrait@2x.png"
+$util -Z 1024 -c 1024 768 "$2" --out "$3/ios/Default-PortraitRetina.png"
+$util -Z 2048 -c 2048 1536 "$2" --out "$3/ios/Default-PortraitRetina@2x.png"
+$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default.png"
+$util -Z 960 -c 640 960 "$2" --out "$3/ios/Default@2x-Landscape.png"
+$util -Z 960 -c 960 640 "$2" --out "$3/ios/Default@2x.png"
+
+$util -Z 1280 -c 800 1280 "$2" --out "$3/android/display-land-hdpi-splashscreen.png"
+$util -Z 800 -c 480 800 "$2" --out "$3/android/display-land-ldpi-splashscreen.png"
+$util -Z 800 -c 480 800 "$2" --out "$3/android/display-land-mdpi-splashscreen.png"
+$util -Z 1024 -c 768 1024 "$2" --out "$3/android/display-land-xhdpi-splashscreen.png"
+$util -Z 1280 -c 1280 800 "$2" --out "$3/android/display-port-hdpi-splashscreen.png"
+$util -Z 800 -c 800 480 "$2" --out "$3/android/display-port-ldpi-splashscreen.png"
+$util -Z 800 -c 800 480 "$2" --out "$3/android/display-port-mdpi-splashscreen.png"
+$util -Z 1024 -c 1024 768 "$2" --out "$3/android/display-port-xhdpi-splashscreen.png"
