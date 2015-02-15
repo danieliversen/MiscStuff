@@ -1,12 +1,11 @@
 #!/bin/bash
-# Generate mass icon and splash screens for Oracle MAF
+# Generate mass icon and splash screens for Oracle ADF Mobile / MAF
 # Based on Phonegap code copyright 2013 Tom Vincent <http://tlvince.com/contact>
 # modified a little by Nathan Birchenough, 2014 - http://birchenough.co.uk
 # modified a lot (but with no real creativity) by Daniel Iversen - www.nexle.dk
-# simplified for Mac OS X by Ruben Garcia, 2014 - http://rubengarciam.com
-# sh ~/apps/maf-icon-spash-genr.sh icon.png splash.png
+# sh ~/apps/oracle-maf-adf-mobile-icon-splashscreen-generator.sh icon colour
 
-usage() { echo "usage: $0 icon.png splash.png [dest_dir]"; exit 1; }
+usage() { echo "usage: $0 icon colour [dest_dir]"; exit 1; }
 
 [ "$1" ] && [ "$2" ] || usage
 [ "$3" ] || set "$1" "$2" "."
@@ -14,62 +13,58 @@ usage() { echo "usage: $0 icon.png splash.png [dest_dir]"; exit 1; }
 proj=${PWD##*/};
 echo "project name: $proj";
 
-#devices=android,bada,bada-wac,blackberry,ios,webos,windows-phone
+devices=android,bada,bada-wac,blackberry,ios,webos,windows-phone
 eval mkdir -p "$3/{android,ios}"
+eval mkdir -p "$3/ios/{webapp-splash,icons}"
 
 # Show the user some progress by outputing all commands being run.
 set -x
 
-# Define here your editing tool -- sips by default on MacOSX
-util="sips"
+# Explicitly set background in case image is transparent (see: #3)
+convert="/opt/ImageMagick/bin/convert -background none"
 
-# Icon resizing
-$util -Z 72 "$1" --out "$3/android/display-hdpi-icon.png"
-$util -Z 36 "$1" --out "$3/android/display-ldpi-icon.png"
-$util -Z 48 "$1" --out "$3/android/display-mdpi-icon.png"
-$util -Z 72 "$1" --out "$3/android/display-xhdpi-icon.png"
+convert="/opt/ImageMagick/bin/convert $1 -background $2 -gravity center"
 
-$util -Z 29 "$1" --out "$3/ios/Icon-29.png"
-$util -Z 58 "$1" --out "$3/ios/Icon-29@2x.png"
-$util -Z 40 "$1" --out "$3/ios/Icon-40.png"
-$util -Z 80 "$1" --out "$3/ios/Icon-40@2x.png"
-$util -Z 50 "$1" --out "$3/ios/Icon-50.png"
-$util -Z 100 "$1" --out "$3/ios/Icon-50@2x.png"
-$util -Z 57 "$1" --out "$3/ios/Icon-57.png"
-$util -Z 114 "$1" --out "$3/ios/Icon-57@2x.png"
-$util -Z 72 "$1" --out "$3/ios/Icon-72.png"
-$util -Z 144 "$1" --out "$3/ios/Icon-72@2x.png"
-$util -Z 76 "$1" --out "$3/ios/Icon-76.png"
-$util -Z 152 "$1" --out "$3/ios/Icon-76@2x.png"
-$util -Z 120 "$1" --out "$3/ios/Icon-120.png"
-$util -Z 512 "$1" --out "$3/ios/iTunesArtwork.png"
+$convert -resize 1280x800 -extent 1280x800 "$3/android/display-land-hdpi-splashscreen.png"
+$convert -resize 800x480 -extent 800x480 "$3/android/display-land-ldpi-splashscreen.png"
+$convert -resize 800x480 -extent 800x480 "$3/android/display-land-mdpi-splashscreen.png"
+$convert -resize 1024x768 -extent 1024x768 "$3/android/display-land-xhdpi-splashscreen.png"
+$convert -resize 800x1280 -extent 800x1280 "$3/android/display-port-hdpi-splashscreen.png"
+$convert -resize 480x800 -extent 480x800 "$3/android/display-port-ldpi-splashscreen.png"
+$convert -resize 480x800 -extent 480x800 "$3/android/display-port-mdpi-splashscreen.png"
+$convert -resize 768x1024 -extent 768x1024 "$3/android/display-port-xhdpi-splashscreen.png"
 
-# Splash resizing
+$convert -resize 320x480 -extent 320x480 "$3/ios/Default-1135h@2x.png"
+$convert -resize 640x1136 -extent 640x1136 "$3/ios/Default-568h@2x.png"
+$convert -resize 480x320 -extent 480x320 "$3/ios/Default-Land.png"
+$convert -resize 1024x768 -extent 1024x768 "$3/ios/Default-Landscape-Ipad.png"
+$convert -resize 1024x768 -extent 1024x768 "$3/ios/Default-Landscape.png"
+$convert -resize 2048x1536 -extent 2048x1536 "$3/ios/Default-Landscape@2x~ipad.png"
+$convert -resize 768x1024 -extent 768x1024 "$3/ios/Default-Portrait-Ipad.png"
+$convert -resize 768x1024 -extent 768x1024 "$3/ios/Default-Portrait.png"
+$convert -resize 1536x2048 -extent 1536x2048 "$3/ios/Default-Portrait@2x~ipad.png"
+$convert -resize 320x480 -extent 320x480 "$3/ios/Default.png"
+$convert -resize 960x640 -extent 960x640 "$3/ios/Default@2x-Landscape.png"
+$convert -resize 640x960 -extent 640x960 "$3/ios/Default@2x.png"
+$convert -resize 512x512 -extent 512x512 "$3/ios/iTunesArtwork.png"
 
-#$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default-1135h@2x.png"
-$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default-1135h@2x.png"
-$util -Z 1136 -c 1136 640 "$2" --out "$3/ios/Default-568h@2x.png"
-$util -Z 480 -c 320 480 "$2" --out "$3/ios/Default-Land.png"
-$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-Landscape-Ipad.png"
-$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-Landscape.png"
-$util -Z 2048 -c 1469 2048 "$2" --out "$3/ios/Default-Landscape@2x.png"
-$util -Z 2048 -c 1536 2048 "$2" --out "$3/ios/Default-Landscape@2x~ipad.png"
-$util -Z 1024 -c 768 1024 "$2" --out "$3/ios/Default-LandscapeRetina.png"
-$util -Z 2048 -c 1536 2048 "$2" --out "$3/ios/Default-LandscapeRetina@2x.png"
-$util -Z 1024 -c 1004 768 "$2" --out "$3/ios/Default-Portrait-Ipad.png"
-$util -Z 1024 -c 1004 768 "$2" --out "$3/ios/Default-Portrait.png"
-$util -Z 2008 -c 2008 1536 "$2" --out "$3/ios/Default-Portrait@2x.png"
-$util -Z 1024 -c 1024 768 "$2" --out "$3/ios/Default-PortraitRetina.png"
-$util -Z 2048 -c 2048 1536 "$2" --out "$3/ios/Default-PortraitRetina@2x.png"
-$util -Z 480 -c 480 320 "$2" --out "$3/ios/Default.png"
-$util -Z 960 -c 640 960 "$2" --out "$3/ios/Default@2x-Landscape.png"
-$util -Z 960 -c 960 640 "$2" --out "$3/ios/Default@2x.png"
+#webapp-naming
+$convert -resize 1536x2008 -extent 1536x2008 "$3/ios/webapp-splash/apple-touch-startup-image-1536x2008.png"
+$convert -resize 1496x2048 -extent 1496x2048 "$3/ios/webapp-splash/apple-touch-startup-image-1496x2048.png"
+$convert -resize 768x1004  -extent 768x1004  "$3/ios/webapp-splash/apple-touch-startup-image-768x1004.png"
+$convert -resize 748x1024  -extent 748x1024  "$3/ios/webapp-splash/apple-touch-startup-image-748x1024.png"
+$convert -resize 1242x2148 -extent 1242x2148 "$3/ios/webapp-splash/apple-touch-startup-image-1242x2148.png"
+$convert -resize 1182x2208 -extent 1182x2208 "$3/ios/webapp-splash/apple-touch-startup-image-1182x2208.png"
+$convert -resize 750x1294  -extent 750x1294  "$3/ios/webapp-splash/apple-touch-startup-image-750x1294.png"
+$convert -resize 640x1096  -extent 640x1096  "$3/ios/webapp-splash/apple-touch-startup-image-640x1096.png"
+$convert -resize 640x920   -extent 640x920   "$3/ios/webapp-splash/apple-touch-startup-image-640x920.png"
+$convert -resize 320x460   -extent 320x460   "$3/ios/webapp-splash/apple-touch-startup-image-320x460.png"
+ 
+ 
 
-$util -Z 1280 -c 800 1280 "$2" --out "$3/android/display-land-hdpi-splashscreen.png"
-$util -Z 800 -c 480 800 "$2" --out "$3/android/display-land-ldpi-splashscreen.png"
-$util -Z 800 -c 480 800 "$2" --out "$3/android/display-land-mdpi-splashscreen.png"
-$util -Z 1024 -c 768 1024 "$2" --out "$3/android/display-land-xhdpi-splashscreen.png"
-$util -Z 1280 -c 1280 800 "$2" --out "$3/android/display-port-hdpi-splashscreen.png"
-$util -Z 800 -c 800 480 "$2" --out "$3/android/display-port-ldpi-splashscreen.png"
-$util -Z 800 -c 800 480 "$2" --out "$3/android/display-port-mdpi-splashscreen.png"
-$util -Z 1024 -c 1024 768 "$2" --out "$3/android/display-port-xhdpi-splashscreen.png"
+#icons
+$convert -resize 76x76 -extent 76x76 "$3/ios/icons/apple-touch-icon-precomposed-76.png"
+$convert -resize 72x72 -extent 72x72 "$3/ios/icons/apple-touch-icon-precomposed-72.png"
+$convert -resize 120x120 -extent 120x120 "$3/ios/icons/apple-touch-icon-precomposed-180.png"
+$convert -resize 114x114 -extent 114x114 "$3/ios/icons/apple-touch-icon-precomposed-114.png"
+$convert -resize 57x57 -extent 57x57 "$3/ios/icons/apple-touch-icon-precomposed-57.png"
